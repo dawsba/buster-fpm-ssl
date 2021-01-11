@@ -302,6 +302,7 @@ ENTRYPOINT ["docker-php-entrypoint"]
 STOPSIGNAL SIGWINCH
 
 COPY apache2-foreground /usr/local/bin/
+RUN chmod +x /usr/local/bin/apache2-foreground
 WORKDIR /var/www/html
 
 VOLUME ["/var/www/html", "${APACHE_CONFDIR}"]
