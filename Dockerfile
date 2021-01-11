@@ -166,7 +166,7 @@ RUN set -eux; \
 	apt-mark manual $savedAptMark > /dev/null; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
-COPY docker-php-source /usr/local/bin/
+COPY docker-php-* /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-php-*
 
 #RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
@@ -279,9 +279,6 @@ RUN set -eux; \
 	\
 # smoke test
 	php --version
-
-COPY docker-php-ext-* docker-php-entrypoint /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-php-ext-*
 
 RUN docker-php-ext-install ${ADDITIONAL_PHP_MODULES}
 
