@@ -281,7 +281,7 @@ RUN set -eux; \
 	php --version
 
 COPY docker-php-ext-* docker-php-entrypoint /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-php-ext.*
+RUN chmod +x /usr/local/bin/docker-php-ext-*
 
 RUN docker-php-ext-install ${ADDITIONAL_PHP_MODULES}
 
