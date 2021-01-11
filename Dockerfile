@@ -46,6 +46,7 @@ RUN set -eux; \
 		ca-certificates \
 		curl \
 		xz-utils \
+		sendmail \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
@@ -288,6 +289,24 @@ RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev \
 
 RUN a2enmod rewrite
 RUN a2enmod ssl
+
+# Installs sendmail
+RUN echo "localhost localhost.localdomain" >> /etc/hosts
+RUN sed -i '/#!\/bin\/sh/aecho "$(hostname -i)\t$(hostname) $(hostname).localhost" >> /etc/hosts' /usr/local/bin/docker-php-entrypoint
+
+RUN apt-get update &&\
+    apt-get install --no-install-recommends --assume-yes --quiet ca-certificates curl git &&\
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -Lsf 'https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz' | tar -C '/usr/local' -xvzf -
+ENV PATH /usr/local/go/bin:$PATH
+RUN go get github.com/mailhog/mhsendmail
+RUN cp /root/go/bin/mhsendmail /usr/bin/mhsendmail
+RUN echo 'sendmail_path = /usr/bin/mhsendmail --smtp-addr mailhog:1025' > /usr/local/etc/php/php.ini
+
+# And clean up the image
+
+RUN rm -rf /var/lib/apt/lists/*
 
 # Generate new snakeoil cert
 RUN openssl req -new -x509 -days 365 -nodes -out /etc/ssl/certs/snakeoil.pem -keyout /etc/ssl/certs/snakeoil.key -batch
