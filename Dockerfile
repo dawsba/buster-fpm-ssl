@@ -283,9 +283,18 @@ RUN set -eux; \
 
 RUN docker-php-ext-install ${ADDITIONAL_PHP_MODULES}
 
-RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev \
+RUN apt-get update && apt-get install -y \
+    libmemcached-dev \
+    zlib1g-dev \
+    libwebp-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev libxpm-dev \
+    libfreetype6-dev\
     && pecl install memcached \
     && docker-php-ext-enable memcached
+
+RUN docker-php-ext-install gd
+RUN docker-php-ext-enable gd
 
 RUN a2enmod rewrite
 RUN a2enmod ssl
